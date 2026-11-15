@@ -20,6 +20,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ message: 'AI Writing Assistant API is running!' });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
@@ -89,7 +94,7 @@ app.post('/api/generate', async (req, res) => {
     });
   } catch (error) {
     console.error('Generation error:', error);
-    res.status(500).json({ error: 'Failed to generate content. Please try again.' });
+    res.status(500).json({ error: error.message || 'Failed to generate content. Please try again.' });
   }
 });
 
@@ -138,7 +143,7 @@ app.post('/api/chat', async (req, res) => {
     });
   } catch (error) {
     console.error('Chat error:', error);
-    res.status(500).json({ error: 'Failed to process message. Please try again.' });
+    res.status(500).json({ error: error.message || 'Failed to process message. Please try again.' });
   }
 });
 

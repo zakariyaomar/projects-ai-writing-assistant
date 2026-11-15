@@ -4,19 +4,19 @@ const Anthropic = require('@anthropic-ai/sdk');
 const OpenAI = require('openai');
 
 // Initialize clients
-const anthropicClient = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const anthropicClient = process.env.ANTHROPIC_API_KEY
+  ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+  : null;
 
-// const openaiClient = new OpenAI({
-//   apiKey: process.env.OPENAI_API_KEY,
-// });
+const openaiClient = process.env.OPENAI_API_KEY
+  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  : null;
 
 // Default configuration from environment
-const DEFAULT_PROVIDER = process.env.DEFAULT_LLM_PROVIDER || 'anthropic';
+const DEFAULT_PROVIDER = process.env.DEFAULT_LLM_PROVIDER || (process.env.OPENAI_API_KEY ? 'openai' : 'anthropic');
 const DEFAULT_MODELS = {
-  anthropic: process.env.DEFAULT_ANTHROPIC_MODEL || 'claude-haiku-5-5',
-  openai: process.env.DEFAULT_OPENAI_MODEL || 'gpt-6-luna',
+  anthropic: process.env.DEFAULT_ANTHROPIC_MODEL || 'claude-3-haiku-20240307',
+  openai: process.env.DEFAULT_OPENAI_MODEL || 'gpt-4o-mini',
 };
 
 function getResponseText(content, provider) {
@@ -40,6 +40,9 @@ function getResponseText(content, provider) {
  * Call Anthropic's Claude API and return a normalized response.
  */
 async function callAnthropic({ model, system, messages,  maxTokens }) {
+  if (!anthropicClient) {
+    throw new Error('ANTHROPIC_API_KEY is not configured.');
+  }
   const response = await anthropicClient.messages.create({
     model: model,
     max_tokens: maxTokens,
@@ -65,6 +68,9 @@ async function callAnthropic({ model, system, messages,  maxTokens }) {
  * Call OpenAI's GPT API and return a normalized response.
  */
 async function callOpenAI({ model, system, messages, temperature, maxTokens }) {
+  if (!openaiClient) {
+    throw new Error('OPENAI_API_KEY is not configured.');
+  }
   // Build messages array with system prompt
   const apiMessages = [];
 
