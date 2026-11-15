@@ -1,5 +1,6 @@
 // client/src/components/DraftList.jsx
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 function DraftList() {
   const [drafts, setDrafts] = useState([]);
@@ -11,7 +12,7 @@ function DraftList() {
 
     const loadDrafts = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/drafts');
+        const response = await fetch(`${API_BASE_URL}/api/drafts`);
         const data = await response.json();
         if (isMounted) setDrafts(data.drafts);
       } catch (error) {
@@ -32,7 +33,7 @@ function DraftList() {
     if (!confirm('Are you sure you want to delete this draft?')) return;
 
     try {
-      await fetch(`http://localhost:3001/api/drafts/${id}`, { method: 'DELETE' });
+      await fetch(`${API_BASE_URL}/api/drafts/${id}`, { method: 'DELETE' });
       setDrafts((prev) => prev.filter((d) => d.id !== id));
       if (selectedDraft?.id === id) setSelectedDraft(null);
     } catch (error) {

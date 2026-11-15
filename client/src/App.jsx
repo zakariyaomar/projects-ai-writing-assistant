@@ -4,6 +4,7 @@ import GenerateForm from './components/GenerateForm';
 import ContentDisplay from './components/ContentDisplay';
 import ChatPanel from './components/ChatPanel';
 import DraftList from './components/DraftList';
+import { API_BASE_URL } from './config';
 
 function App() {
   const [activeTab, setActiveTab] = useState('generate');
@@ -17,7 +18,7 @@ function App() {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/generate', {
+      const response = await fetch(`${API_BASE_URL}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -44,7 +45,7 @@ function App() {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/chat', {
+      const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ conversationId, message }),
@@ -70,7 +71,7 @@ function App() {
     if (!generatedContent) return;
 
     try {
-      const response = await fetch('http://localhost:3001/api/drafts', {
+      const response = await fetch(`${API_BASE_URL}/api/drafts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
